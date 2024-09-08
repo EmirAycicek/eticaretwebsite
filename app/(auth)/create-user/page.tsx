@@ -20,6 +20,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import useAuthStore from "@/hooks/useAuth";
+import registerUser from "@/actions/register";
+import startSession from "@/lib/session";
+import { toast, useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { Loader2Icon } from "lucide-react";
 
 const formSchema = z.object({
   userName: z.string().min(2, {
@@ -34,6 +40,10 @@ const formSchema = z.object({
 });
 
 const CreateUserPage = () => {
+  const { loader, setLoader } = useAuthStore();
+  const { toast } = useToast();
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,7 +53,32 @@ const CreateUserPage = () => {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = (data: z.infer<typeof formSchema>) => {
+    setLoader(true);
+
+    registerUser(data.userName, data.email, data.password)
+      .then(
+        (resp) => {
+          startSession(resp.user, resp.jwt);
+          toast({
+            variant: "success",
+            title: "Account Created",
+          });
+          setLoader(false);
+          router.push("/");
+        },
+        (error) => {
+          setLoader(false);
+          toast({
+            variant: "destructive",
+            title: "Something went wrong",
+          });
+        }
+      )
+      .finally(() => {
+        setLoader(false);
+      });
+  };
 
   return (
     <Form {...form}>
@@ -91,7 +126,7 @@ const CreateUserPage = () => {
           )}
         />
         <Button type="submit" className="w-full">
-          Submit
+          {loader ? <Loader2Icon className="animate-spin" /> : "Create Account"}
         </Button>
       </form>
       <div className="mt-8">
