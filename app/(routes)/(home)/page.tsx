@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ModeToggle";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   return (
     <div>
       <button>deneme</button>
-      <Button>deneme</Button>
+      <Button variant="destructive">deneme</Button>
 
       <Button
         onClick={() => {
@@ -22,6 +23,7 @@ export default function Home() {
       >
         Show Toast
       </Button>
+      <ModeToggle />
     </div>
   );
 }
