@@ -42,7 +42,7 @@ const UserMenu = () => {
             <UserCircleIcon className="h-6 w-6" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel>My Account cartcurt</DropdownMenuLabel>
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={onSignOut}>Logout</DropdownMenuItem>
