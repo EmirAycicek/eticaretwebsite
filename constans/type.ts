@@ -4,6 +4,11 @@ export type Category = {
         name: string;
         slug: string;
         image: {
+            data: {
+                attributes:{
+                    url:string;
+                }
+            }
             url: string;
         };
     }
