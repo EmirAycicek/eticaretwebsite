@@ -1,14 +1,7 @@
 import { Product } from "@/constans/type";
 import React from "react";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ProductModal from "./ProductModal";
@@ -19,9 +12,6 @@ interface ProductItemProps {
 }
 
 const ProductItem = ({ product }: ProductItemProps) => {
-  {
-    console.log("product", product);
-  }
   return (
     <div className="group p-2 md:p-4 lg:p-6 flex flex-col items-center justify-center gap-4 border borderone bgone rounded-xl hover:shadow-xl transition-all cursor-pointer duration-300">
       <ProductImages images={product?.attributes?.images} />
@@ -44,14 +34,16 @@ const ProductItem = ({ product }: ProductItemProps) => {
       <div className="flex flex-row gap-4">
         <Dialog>
           <DialogTrigger>
-            <Button variant="destructive">Add to Cart</Button>
+            <Button variant="destructive" className="rounded-2xl">
+              Add to Cart
+            </Button>
           </DialogTrigger>
           <DialogContent className="bgone sm:max-w-[900px]">
             <ProductModal product={product} />
           </DialogContent>
         </Dialog>
 
-        <Button asChild>
+        <Button asChild className="rounded-2xl">
           <Link href={`product/${product?.attributes?.slug}`}>Detail</Link>
         </Button>
       </div>
