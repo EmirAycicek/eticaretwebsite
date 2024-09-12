@@ -67,7 +67,7 @@ const LoginPage = () => {
           setLoader(false);
           toast({
             variant: "destructive",
-            title: "Something went wrong",
+            title: error,
           });
         }
       )

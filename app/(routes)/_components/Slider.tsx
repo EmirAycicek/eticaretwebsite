@@ -61,7 +61,7 @@ const SliderComponent = () => {
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${slider?.attributes?.media?.data?.attributes?.url}`}
                     width={500} // Resim boyutlarına uygun genişlik ve yükseklik eklenmeli
                     height={300}
-                    className="w-full h-[200px] md:h-[450px] object-cover"
+                    className="w-full h-[200px] md:h-[450px] lg:h-[545px] object-cover"
                   />
                 </Link>
               </CarouselItem>
