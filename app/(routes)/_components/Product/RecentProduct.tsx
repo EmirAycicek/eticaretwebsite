@@ -42,7 +42,7 @@ const RecentProduct = () => {
       ) : (
         <div className="mt-10 container">
           <h2 className="textone font-semibold text-2xl lg:text-3xl">
-            Recent Products
+            Recent Productsddd
           </h2>
 
           <Carousel className="w-full mb-11">
