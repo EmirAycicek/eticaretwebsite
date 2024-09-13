@@ -51,7 +51,7 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
 
   return (
     <>
-      <div className="flex flex-row">
+      <div className="flex flex-row space-x-3">
         <Select onValueChange={handleColorChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Color" />

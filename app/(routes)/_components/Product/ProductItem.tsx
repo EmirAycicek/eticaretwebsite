@@ -13,7 +13,7 @@ interface ProductItemProps {
 
 const ProductItem = ({ product }: ProductItemProps) => {
   return (
-    <div className="group p-2 md:p-4 lg:p-6 flex flex-col items-center justify-center gap-4 border borderone bgone rounded-xl hover:shadow-xl transition-all cursor-pointer duration-300">
+    <div className="group p-2 md:p-4 lg:p-6 lg:h-[500px] flex flex-col items-center justify-center gap-4 border borderone bgone rounded-xl hover:shadow-xl transition-all cursor-pointer duration-300">
       <ProductImages images={product?.attributes?.images} />
       <h2 className="font-bold text-lg">{product?.attributes?.name}</h2>
       <div className="flex gap-3">
