@@ -33,6 +33,7 @@ export type Size = {
     id: number;
     attributes: {
         name:string;
+        slug: string;
     }
 }
 
@@ -40,6 +41,7 @@ export type Color = {
     id: number;
     attributes: {
         name:string;
+        slug: string;
     }
 }
 
