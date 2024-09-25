@@ -1,6 +1,6 @@
 import { Product } from "@/constans/type";
 import { useProductFormStore } from "@/hooks/useForm";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Select,
@@ -10,8 +10,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Minus, PlusIcon } from "lucide-react";
+import { Loader2Icon, Minus, PlusIcon } from "lucide-react";
 import Link from "next/link";
+import { AddToCart } from "@/actions/cart/addToCart";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 interface ProductFormProps {
   product: Product;
@@ -19,6 +22,9 @@ interface ProductFormProps {
 }
 
 const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
   const {
     decrementQuantity,
     incrementQuantity,
@@ -44,10 +50,58 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
 
   const totalPrice = (quantity * product?.attributes?.sellingPrice).toFixed(2);
 
-  console.log("Quantity" + quantity);
-  console.log("Size" + selectedSize);
-  console.log("Color" + selectedColor);
-  console.log("totalPrice" + totalPrice);
+  let jwt = "";
+  let user = "";
+  let userId = "";
+
+  try {
+    jwt = localStorage.getItem("jwt") || "";
+    user = localStorage.getItem("user") || "";
+
+    if (user) {
+      const userObj = JSON.parse(user);
+      userId = userObj.id;
+    }
+  } catch (error) {
+    console.error("form", error);
+  }
+
+  const onAddCart = async () => {
+    try {
+      setLoading(true);
+
+      if (!selectedColor || !selectedSize) {
+        toast({
+          title: "Color and Size required",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const data = {
+        data: {
+          quantity: quantity,
+          amount: totalPrice,
+          size: selectedSize,
+          color: selectedColor,
+          products: product.id,
+          users_permissions_user: userId,
+          userId: userId,
+        },
+      };
+      console.log(data.data);
+
+      await AddToCart(data, jwt);
+      toast({
+        title: "Add to Cart ",
+        variant: "success",
+      });
+    } catch (error) {
+      console.log("form aadaasd", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -91,8 +145,12 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
       </div>
 
       <div className="flex flex-row gap-2 mt-8  ">
-        <Button variant="destructive" className="rounded-2xl">
-          Add To Card
+        <Button
+          variant="destructive"
+          className="rounded-2xl"
+          onClick={onAddCart}
+        >
+          {loading ? <Loader2Icon className="animate-spin" /> : "Add To Card"}
         </Button>
 
         {btnVisible && (

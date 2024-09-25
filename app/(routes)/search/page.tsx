@@ -43,7 +43,7 @@ const SearchPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
-  const [pageSize] = useState(8);
+  const [pageSize] = useState(8); // Her sayfada 8 ürün
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
@@ -54,8 +54,9 @@ const SearchPage = () => {
       color,
       size,
       page: page.toString(),
+      pageSize: pageSize.toString(), // pageSize ekliyoruz
     });
-  }, [searchParams]);
+  }, [searchParams, page]);
 
   const fetchColorSizesCategories = async () => {
     try {
@@ -78,11 +79,12 @@ const SearchPage = () => {
 
   const fetchProducts = async (
     filters = {
-      search: "", // varsayılan olarak boş bir string dizisi
-      category: "all", //Varsayılan olarak 'all' kategorisi
+      search: "", // Varsayılan olarak boş bir string
+      category: "all", // Varsayılan olarak 'all' kategorisi
       color: "all",
       size: "all",
       page: "1",
+      pageSize: "8", // Her sayfada kaç ürün gösterileceğini belirtiyoruz
     }
   ) => {
     setLoading(true);
@@ -106,7 +108,9 @@ const SearchPage = () => {
         params.append("filters[sizes][name][$eq]", filters.size);
       }
 
+      // Sayfa ve sayfa boyutunu ekliyoruz
       params.append("pagination[page]", filters.page);
+      params.append("pagination[pageSize]", filters.pageSize);
 
       const response = await axios.get(
         `${
@@ -165,6 +169,7 @@ const SearchPage = () => {
   const handlePageChange = (newPage: string) => {
     if (parseInt(newPage) < 1 || parseInt(newPage) > totalPages) return;
 
+    setLoading(true);
     setPage(parseInt(newPage));
     updateURL("page", newPage);
   };
