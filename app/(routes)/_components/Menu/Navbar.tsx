@@ -31,6 +31,24 @@ const Navbar = () => {
     fetchCategories();
   }, []);
 
+  let jwt = "";
+  let user = "";
+  let userId = "";
+
+  try {
+    if (typeof window != "undefined") {
+      jwt = localStorage.getItem("jwt") || "";
+      user = localStorage.getItem("user") || "";
+
+      if (user) {
+        const userObj = JSON.parse(user);
+        userId = userObj.id;
+      }
+    }
+  } catch (error) {
+    console.error("form", error);
+  }
+
   return (
     <>
       <header className="flex py-4 border-b borderone bgone">
@@ -39,7 +57,7 @@ const Navbar = () => {
           <Search />
 
           <div className="space-x-4 flex items-center">
-            <Cart />
+            <Cart jwt={jwt} userId={userId} />
             <UserMenu />
             <ModeToggle />
 

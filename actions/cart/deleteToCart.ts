@@ -1,11 +1,14 @@
 import axios from "axios";
 
-const Urls = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/carts`
 
-export const AddToCart = async(data:any, jwt:any) => {
+
+export const DeleteToCart = async(jwt:any, id:any) => {
+
+    const Urls = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/carts/${id}`
+
     try {       
 
-        const response = await axios.post(Urls, data,  {
+        const response = await axios.delete(Urls,  {
             headers: {
                 Authorization: `Bearer ${jwt}`
             }

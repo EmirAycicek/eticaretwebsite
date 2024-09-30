@@ -44,7 +44,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
         </Dialog>
 
         <Button asChild className="rounded-2xl">
-          <Link href={`product/${product?.attributes?.slug}`}>Detail</Link>
+          <Link href={`/product/${product?.attributes?.slug}`}>Detail</Link>
         </Button>
       </div>
     </div>

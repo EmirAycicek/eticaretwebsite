@@ -15,6 +15,8 @@ import Link from "next/link";
 import { AddToCart } from "@/actions/cart/addToCart";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@radix-ui/react-toast";
+import useCartStore from "@/hooks/useCartStore";
+import { useRouter } from "next/navigation";
 
 interface ProductFormProps {
   product: Product;
@@ -24,6 +26,9 @@ interface ProductFormProps {
 const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
+
+  const fetchItems = useCartStore((state: any) => state.fetchItems);
 
   const {
     decrementQuantity,
@@ -67,16 +72,20 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
   }
 
   const onAddCart = async () => {
+    if (!userId && !jwt) {
+      router.push("/login");
+    }
+
+    if (!selectedColor || !selectedSize) {
+      toast({
+        title: "Color and Size required",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setLoading(true);
-
-      if (!selectedColor || !selectedSize) {
-        toast({
-          title: "Color and Size required",
-          variant: "destructive",
-        });
-        return;
-      }
 
       const data = {
         data: {
@@ -96,6 +105,7 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
         title: "Add to Cart ",
         variant: "success",
       });
+      fetchItems(userId, jwt);
     } catch (error) {
       console.log("form aadaasd", error);
     } finally {
