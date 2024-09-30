@@ -8,9 +8,6 @@ interface CartItemProps {
 }
 
 const CartItem = ({ item, onDeleteItem }: CartItemProps) => {
-  {
-    console.log("item", item);
-  }
   return (
     <div className="flex justify-between items-center p-2 mb-5">
       <div className="flex gap-4 items-center">
