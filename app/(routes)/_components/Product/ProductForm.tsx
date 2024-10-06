@@ -122,7 +122,7 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
           </SelectTrigger>
           <SelectContent>
             {product?.attributes?.colors?.data?.map((color) => (
-              <SelectItem value={color?.attributes?.name}>
+              <SelectItem value={color?.attributes?.name} key={color.id}>
                 {color?.attributes?.name}
               </SelectItem>
             ))}
@@ -135,7 +135,7 @@ const ProductForm = ({ product, btnVisible }: ProductFormProps) => {
           </SelectTrigger>
           <SelectContent>
             {product?.attributes?.sizes?.data?.map((sizes) => (
-              <SelectItem value={sizes?.attributes?.name}>
+              <SelectItem value={sizes?.attributes?.name} key={sizes.id}>
                 {sizes?.attributes?.name}
               </SelectItem>
             ))}

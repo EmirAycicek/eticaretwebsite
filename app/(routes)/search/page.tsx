@@ -45,6 +45,9 @@ const SearchPage = () => {
   const [page, setPage] = useState(parseInt(searchParams.get("page") || "1"));
   const [pageSize] = useState(8); // Her sayfada 8 ürün
   const [totalPages, setTotalPages] = useState(1);
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
 
   useEffect(() => {
     fetchColorSizesCategories();
@@ -140,15 +143,17 @@ const SearchPage = () => {
     router.push(`/search?${newParams.toString()}`);
   };
 
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      updateURL("q", search);
-    }, 2000);
-    return () => clearTimeout(delayDebounceFn);
-  }, [search]);
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
+    const value = e.target.value;
+    setSearch(value);
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+    const timeout = setTimeout(() => {
+      updateURL("q", value);
+    }, 2000);
+
+    setDebounceTimeout(timeout);
   };
 
   const handleColorChange = (value: string) => {

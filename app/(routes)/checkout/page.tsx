@@ -49,9 +49,9 @@ const CheckoutPage = () => {
 
   return (
     <div className="container mt-8 mb-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="col-span-1 lg:col-span-4 bgone border borderone rounded-md lg:h-screen">
-          <CheckoutForm />
+      <div className="grid grid-cols-2 xl:grid-cols-3 gap-8">
+        <div className="col-span-1 lg:col-span-4 bgone border borderone rounded-md">
+          <CheckoutForm subtotal={subTotal} userId={userId} jwt={jwt} />
         </div>
 
         <div className="col-span-1 bgone borderone justify-center items-center rounded-md h-screen">

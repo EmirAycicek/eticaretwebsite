@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import axios from "axios";
+import { createOrder } from "@/actions/cart/createOrder";
+import { DeleteToCart } from "@/actions/cart/deleteToCart";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -46,25 +51,144 @@ const formSchema = z.object({
   cvc: z.string().regex(/^\d{3,4}$/, { message: "CVC must be 3 or 4 digits." }),
 });
 
-const CheckoutForm = () => {
-  const { items } = useCartStore();
+interface CheckoutFormProps {
+  subtotal: number;
+  userId: string;
+  jwt: string;
+}
+
+const CheckoutForm = ({ subtotal, userId, jwt }: CheckoutFormProps) => {
+  const { items, fetchItem } = useCartStore();
+
+  const [response, setResponse] = useState(null);
+  const toast = useToast();
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "Emir Ayçiçek",
-      phone: "+09 555 222 111",
+      phone: "+90 555 222 111",
       address: "Sakarya Serdivan",
       holdername: "Emir",
       ccnumber: "5890040000000016",
       month: "04",
       year: "2026",
-      cvc: "159",
+      cvc: "152",
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("data", data);
+  const onSubmit = async (data: any) => {
+    const paymentCard = {
+      cardHolderName: data.holdername,
+      cardNumber: data.ccnumber,
+      expireMonth: data.month,
+      expireYear: data.year,
+      cvc: data.cvc,
+      registeredCard: "0",
+    };
+
+    const buyer = {
+      id: "BY789",
+      name: data.name,
+      surname: "Doe",
+      gsmNumber: data.phone,
+      email: "john.doe@example.com",
+      identityNumber: "74300864791",
+      lastLoginDate: "2015-10-05 12:43:35",
+      registrationDate: "2013-04-21 15:12:09",
+      registrationAddress: data.address,
+      ip: "85.111.48.37",
+      city: "Sakarya",
+      country: "Turkey",
+      zipCode: "54000",
+    };
+
+    const shippingAddress = {
+      contactName: data.name,
+      city: "Sakarya",
+      country: "Turkey",
+      address: data.address,
+      zipCode: "54000",
+    };
+
+    const billingAddress = {
+      contactName: data.name,
+      city: "Sakarya",
+      country: "Turkey",
+      address: data.address,
+      zipCode: "54000",
+    };
+
+    const basketItems = [
+      {
+        id: "BI101",
+        name: "Bioncular",
+        category1: "Collectibles",
+        category2: "Accessories",
+        itemType: "PHYSICAL",
+        price: subtotal,
+      },
+    ];
+
+    const paymentData = {
+      price: subtotal,
+      paidPrice: subtotal,
+      currency: "TRY",
+      basketId: "BI101",
+      paymentCard: paymentCard,
+      buyer: buyer,
+      shippingAddress: shippingAddress,
+      billingAddress: billingAddress,
+      basketItems: basketItems,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/api/payment",
+        paymentData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setResponse(response.data);
+      console.log("response.data", response.data.status);
+
+      if (response.data.status === "success") {
+        const payload = {
+          data: {
+            name: data.name,
+            address: data.address,
+            phone: data.phone,
+            userId: userId,
+            subtotal: subtotal,
+            paymentText: "Iyzcico",
+            OrderItemList: items,
+          },
+        };
+
+        await createOrder(payload, jwt);
+
+        items.forEach((item, index) => {
+          DeleteToCart(jwt, item.id).then((resp) => {});
+        });
+
+        toast.toast({
+          variant: "success",
+          title: "Order Success",
+        });
+
+        fetchItem(userId, jwt);
+
+        router.push("/my-order");
+      }
+
+      console.log("checkoutForm response", response.data);
+    } catch (error) {
+      console.error("CheckoutForm", error);
+    }
   };
 
   return (
