@@ -51,15 +51,19 @@ const SearchPage = () => {
 
   useEffect(() => {
     fetchColorSizesCategories();
+  }, []);
+
+  useEffect(() => {
+    // searchParams değiştiğinde yeni arama işlemini tetiklemek için
     fetchProducts({
-      search,
-      category,
-      color,
-      size,
-      page: page.toString(),
-      pageSize: pageSize.toString(), // pageSize ekliyoruz
+      search: searchParams.get("q") || "",
+      category: searchParams.get("category") || "all",
+      color: searchParams.get("color") || "all",
+      size: searchParams.get("size") || "all",
+      page: searchParams.get("page") || "1",
+      pageSize: pageSize.toString(),
     });
-  }, [searchParams, page]);
+  }, [searchParams]); // searchParams bağımlılığı
 
   const fetchColorSizesCategories = async () => {
     try {
